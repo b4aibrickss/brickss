@@ -1,25 +1,33 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesquisa de Preços</title>
+    <title>Pesquisa de Preços - PWA</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('Service Worker registrado!', reg))
-                .catch(err => console.log('Erro ao registrar o Service Worker', err));
-        }
-    </script>
 </head>
 <body>
     <h1>Pesquisa de Preços</h1>
-    <input type="text" id="search" placeholder="Digite o produto...">
-    <button onclick="fetchPrices()">Buscar</button>
+    <form id="search-form">
+        <input type="text" id="query" placeholder="Digite o produto" required>
+        <button type="button" id="search-button">Pesquisar</button>
+    </form>
     <div id="results"></div>
-    
-    <script src="scripts/fetchPrices.js"></script>
+    <script src="service-worker.js"></script>
+    <script type="module">
+        import { fetchPrices } from './scripts/fetchPrices.js';
+
+        document.getElementById('search-button').addEventListener('click', fetchPrices);
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(function(registration) {
+                    console.log('Service Worker registrado! ', registration);
+                })
+                .catch(function(error) {
+                    console.log('Falha ao registrar o Service Worker: ', error);
+                });
+        }
+    </script>
 </body>
 </html>
