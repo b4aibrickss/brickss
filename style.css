@@ -54,18 +54,21 @@ button:hover {
 }
 
 .result-item {
-    background-color: #fff;
+    background-color: #fff; /* Background color for selected items */
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
     width: 200px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
 }
 
 .result-item img {
     max-width: 100%;
-    height: auto;
+    height: 150px;
+    object-fit: contain;
     border-radius: 5px;
     margin-bottom: 10px;
 }
@@ -85,13 +88,60 @@ button:hover {
     margin-bottom: 10px;
 }
 
-#price-summary {
-    margin-top: 20px;
-    text-align: center;
+.result-item input[type="checkbox"] {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
-#price-summary p {
-    font-size: 18px;
-    color: #333;
-    margin: 5px 0;
+.result-item input[type="checkbox"]:not(:checked) ~ * {
+    opacity: 0.5; /* Reduce opacity for unselected items */
+}
+
+#floating-container {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#price-summary {
+    margin-top: 10px;
+    text-align: left;
+}
+
+#price-summary table {
+    width: 100%;
+}
+
+#price-summary td {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+#price-summary td:first-child {
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    #results {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #floating-container {
+        top: auto;
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        width: calc(100% - 20px);
+    }
 }

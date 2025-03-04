@@ -28,33 +28,20 @@ brickss/
 - **scripts/platforms.js** → Lista de plataformas de busca, podendo ser editada para incluir ou remover marketplaces.
 - **setup_project.sh** → Script Bash que cria automaticamente a estrutura do projeto no Linux Mint.
 
-## 🚀 Como Instalar e Rodar
-
-1. Clone ou baixe este repositório.
-2. Dê permissão de execução ao script de configuração:
-   ```bash
-   chmod +x setup_project.sh
-   ```
-3. Execute o script para criar a estrutura do projeto:
-   ```bash
-   ./setup_project.sh
-   ```
-4. Abra o arquivo `index.html` no navegador e comece a pesquisar preços.
-
 ## 🔧 Como Adicionar/Remover Marketplaces
 
 Para adicionar ou remover marketplaces, edite o arquivo **scripts/platforms.js** e modifique a lista:
 
 ```js
 export const platforms = [
-    { name: 'Mercado Livre', url: 'https://www.mercadolivre.com.br/jm/search?as_word={query}' },
-    { name: 'Shopee', url: 'https://shopee.com.br/search?keyword={query}' },
-    { name: 'Amazon', url: 'https://www.amazon.com.br/s?k={query}' },
-    { name: 'Magalu', url: 'https://www.magazineluiza.com.br/busca/{query}/' },
-    { name: 'Enjoei', url: 'https://www.enjoei.com.br/search?q={query}' },
+    { name: 'Mercado Livre', url: 'https://api.mercadolibre.com/sites/MLB/search?q={query}' },
+    { name: 'Shopee', url: 'https://shopee.com.br/api/v2/search_items/?by=relevancy&keyword={query}' },
+    { name: 'Amazon', url: 'https://api.example.com/amazon/search?query={query}' },
+    { name: 'Magalu', url: 'https://api.magazineluiza.com.br/v1/products?search={query}' },
+    { name: 'Enjoei', url: 'https://www.enjoei.com.br/api/v1/search?q={query}' },
     { name: 'Buscapé', url: 'https://www.buscape.com.br/search?q={query}' },
     { name: 'Lojas Americanas', url: 'https://www.americanas.com.br/busca/{query}' },
-    { name: 'OLX (Exemplo)', url: 'https://www.olx.com.br/ano?search={query}' }
+    { name: 'OLX', url: 'https://www.olx.com.br/api/v1/search?q={query}' }
 ];
 ```
 
@@ -63,9 +50,3 @@ Basta remover ou adicionar um novo objeto JSON com a URL do marketplace correspo
 ---
 
 Agora você tem um PWA funcional e flexível para pesquisar preços em múltiplos marketplaces! 🚀
-
-
-Referências:
-https://developers.mercadolivre.com.br/pt_br/crie-uma-aplicacao-no-mercado-livre 
-
-

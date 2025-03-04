@@ -13,8 +13,28 @@
         <button type="button" id="search-button">Pesquisar</button>
     </form>
     <div id="results"></div>
-    <button type="button" id="calculate-button" style="display: none;" disabled>Calcular Preços</button>
-    <div id="price-summary"></div>
+    <div id="floating-container" style="display: none;">
+        <input type="checkbox" id="select-all" checked>
+        <label for="select-all">Selecionar/Deselecionar Todos</label>
+        <button type="button" id="calculate-button" disabled>Calcular Preços</button>
+        <div id="price-summary">
+            <table>
+                <tr>
+                    <td>Menor Preço:</td>
+                    <td id="min-price"></td>
+                </tr>
+                <tr>
+                    <td>Maior Preço:</td>
+                    <td id="max-price"></td>
+                </tr>
+                <tr>
+                    <td>Preço Médio:</td>
+                    <td id="avg-price"></td>
+                </tr>
+            </table>
+            <p id="no-items-selected" style="display: none; color: red;">Nenhum item selecionado.</p>
+        </div>
+    </div>
     <script src="service-worker.js"></script>
     <script type="module">
         import { fetchPrices, calculatePrices } from './scripts/fetchPrices.js';
