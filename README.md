@@ -64,3 +64,8 @@ Basta remover ou adicionar um novo objeto JSON com a URL do marketplace correspo
 
 Agora você tem um PWA funcional e flexível para pesquisar preços em múltiplos marketplaces! 🚀
 
+
+Referências:
+https://developers.mercadolivre.com.br/pt_br/crie-uma-aplicacao-no-mercado-livre 
+
+

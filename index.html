@@ -13,11 +13,14 @@
         <button type="button" id="search-button">Pesquisar</button>
     </form>
     <div id="results"></div>
+    <button type="button" id="calculate-button" style="display: none;" disabled>Calcular Preços</button>
+    <div id="price-summary"></div>
     <script src="service-worker.js"></script>
     <script type="module">
-        import { fetchPrices } from './scripts/fetchPrices.js';
+        import { fetchPrices, calculatePrices } from './scripts/fetchPrices.js';
 
         document.getElementById('search-button').addEventListener('click', fetchPrices);
+        document.getElementById('calculate-button').addEventListener('click', calculatePrices);
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
