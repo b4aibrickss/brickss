@@ -7,12 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <script async src="https://cse.google.com/cse.js?cx=4495f79b75df04c25">
+    </script>
     <h1>Pesquisa de Preços</h1>
     <form id="search-form">
         <input type="text" id="query" placeholder="Digite o produto" required>
         <button type="button" id="search-button">Pesquisar</button>
     </form>
     <div id="results"></div>
+    <div class="gcse-search"></div>    
+    <div id="custom-results"></div>    
+
     <div id="floating-container" style="display: none;">
         <input type="checkbox" id="select-all" checked>
         <label for="select-all">Selecionar/Deselecionar Todos</label>
@@ -36,10 +41,45 @@
         </div>
     </div>
     <script src="service-worker.js"></script>
-    <script type="module">
-        import { fetchPrices, calculatePrices } from './scripts/fetchPrices.js';
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Função para capturar os resultados
+            function extractResults() {
+                const resultsContainer = document.querySelector(".gsc-results");
+                if (!resultsContainer) return;
 
-        document.getElementById('search-button').addEventListener('click', fetchPrices);
+                let extractedResults = [];
+                document.querySelectorAll(".gsc-webResult .gsc-result").forEach(result => {
+                    const title = result.querySelector(".gs-title").innerText;
+                    const link = result.querySelector(".gs-title a").href;
+                    extractedResults.push({ title, link });
+                });
+
+                // Exibir os resultados extraídos no console
+                console.log("Resultados capturados:", extractedResults);
+
+                // Exibir na interface do PWA
+                const resultsDiv = document.getElementById("custom-results");
+                resultsDiv.innerHTML = extractedResults
+                    .map(r => `<p><a href="${r.link}" target="_blank">${r.title}</a></p>`)
+                    .join("");
+            }
+
+            // Monitorar mudanças nos resultados usando MutationObserver
+            const observer = new MutationObserver(extractResults);
+            const targetNode = document.querySelector(".gcse-search");
+
+            if (targetNode) {
+                observer.observe(targetNode, { childList: true, subtree: true });
+            }
+        });        
+    </script>
+    <script type="module">
+        // import { fetchPrices, calculatePrices } from './scripts/fetchPrices.js';
+        import { searchAndDisplay, calculatePrices } from './scripts/searchPrices.js';
+
+        // document.getElementById('search-button').addEventListener('click', fetchPrices);
+        document.getElementById('search-button').addEventListener('click', searchAndDisplay);
         document.getElementById('calculate-button').addEventListener('click', calculatePrices);
 
         if ('serviceWorker' in navigator) {
