@@ -1,5 +1,73 @@
 import { platforms } from './platforms.js';
 
+async function fetchResultsFromPlatform(platform, query) {
+    const url = platform.api.replace('{query}', encodeURIComponent(query));
+
+    const response = await fetch(url);
+    const contentType = response.headers.get('content-type');
+
+    if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+
+        switch (platform.name) {
+            case 'Mercado Livre':
+                return data.results.map(result => ({
+                    title: result.title,
+                    price: result.price,
+                    image: result.thumbnail,
+                    link: result.permalink
+                }));
+            case 'Amazon':
+                return data.results.map(result => ({
+                    title: result.title,
+                    price: result.price,
+                    image: result.image,
+                    link: result.link
+                }));
+            case 'Magalu':
+                return data.products.map(product => ({
+                    title: product.title,
+                    price: product.price,
+                    image: product.image,
+                    link: product.link
+                }));
+            case 'Enjoei':
+                return data.results.map(result => ({
+                    title: result.title,
+                    price: result.price,
+                    image: result.image,
+                    link: result.link
+                }));
+            case 'Buscapé':
+                return data.results.map(result => ({
+                    title: result.title,
+                    price: result.price,
+                    image: result.image,
+                    link: result.link
+                }));
+            case 'Lojas Americanas':
+                return data.products.map(product => ({
+                    title: product.name,
+                    price: product.salePrice,
+                    image: product.image,
+                    link: product.url
+                }));
+            case 'OLX':
+                return data.results.map(result => ({
+                    title: result.title,
+                    price: result.price,
+                    image: result.thumbnail,
+                    link: result.url
+                }));
+            default:
+                return [];
+        }
+    } else {
+        console.error(`Unexpected content type: ${contentType}`);
+        return [];
+    }
+}
+
 export async function fetchPrices() {
     const query = document.getElementById('query').value;
     const resultsDiv = document.getElementById('results');
@@ -12,21 +80,25 @@ export async function fetchPrices() {
     floatingContainer.style.display = 'none';
     noItemsSelected.style.display = 'none';
 
-    const results = await Promise.all(platforms.map(platform => fetchResultsFromPlatform(platform, query)));
+    const results = [];
+    for (const platform of platforms.platforms) {
+        const platformResults = await fetchResultsFromPlatform(platform, query);
+        results.push(...platformResults);
+    }
 
-    results.flat().forEach(result => {
+    results.forEach(result => {
         const resultItem = document.createElement('div');
         resultItem.classList.add('result-item');
         resultItem.innerHTML = `
             <input type="checkbox" class="result-checkbox" data-price="${result.price}" checked>
             <img src="${result.image}" alt="${result.title}">
             <a href="${result.link}" target="_blank">${result.title}</a>
-            <span>R$ ${result.price}</span>
+            <span>R$ ${result.price.toFixed(2)}</span>
         `;
         resultsDiv.appendChild(resultItem);
     });
 
-    if (results.flat().length > 0) {
+    if (results.length > 0) {
         floatingContainer.style.display = 'block';
         calculatePrices(); // Calculate prices immediately after fetching results
     }
@@ -72,72 +144,4 @@ export function calculatePrices() {
     document.getElementById('min-price').textContent = `R$ ${minPrice.toFixed(2)}`;
     document.getElementById('max-price').textContent = `R$ ${maxPrice.toFixed(2)}`;
     document.getElementById('avg-price').textContent = `R$ ${avgPrice.toFixed(2)}`;
-}
-
-async function fetchResultsFromPlatform(platform, query) {
-    const url = platform.url.replace('{query}', encodeURIComponent(query));
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    switch (platform.name) {
-        case 'Mercado Livre':
-            return data.results.map(result => ({
-                title: result.title,
-                price: result.price,
-                image: result.thumbnail,
-                link: result.permalink
-            }));
-        case 'Shopee':
-            return data.items.map(item => ({
-                title: item.name,
-                price: item.price / 100000, // Shopee retorna o preço em centavos
-                image: item.image,
-                link: `https://shopee.com.br/product/${item.shopid}/${item.itemid}`
-            }));
-        case 'Amazon':
-            return data.results.map(result => ({
-                title: result.title,
-                price: result.price,
-                image: result.image,
-                link: result.link
-            }));
-        case 'Magalu':
-            return data.products.map(product => ({
-                title: product.title,
-                price: product.price,
-                image: product.image,
-                link: product.link
-            }));
-        case 'Enjoei':
-            return data.results.map(result => ({
-                title: result.title,
-                price: result.price,
-                image: result.image,
-                link: result.link
-            }));
-        case 'Buscapé':
-            return data.results.map(result => ({
-                title: result.title,
-                price: result.price,
-                image: result.image,
-                link: result.link
-            }));
-        case 'Lojas Americanas':
-            return data.products.map(product => ({
-                title: product.name,
-                price: product.salePrice,
-                image: product.image,
-                link: product.url
-            }));
-        case 'OLX':
-            return data.results.map(result => ({
-                title: result.title,
-                price: result.price,
-                image: result.thumbnail,
-                link: result.url
-            }));
-        default:
-            return [];
-    }
 }
